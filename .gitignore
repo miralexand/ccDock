@@ -1,0 +1,10 @@
+bin/
+obj/
+dist/
+.scratch/
+*.user
+*.suo
+
+# Syncthing is fetched by scripts/fetch-syncthing.ps1 during build.
+vendor/syncthing/
+vendor/.download/

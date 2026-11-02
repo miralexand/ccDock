@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>11</LangVersion>
+    <AssemblyName>ccDock</AssemblyName>
+    <RootNamespace>CcDock</RootNamespace>
+    <ApplicationIcon>assets\app.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>ccDock</Product>
+    <Company>ccDock</Company>
+    <Description>基于 Syncthing 的 Windows 文件夹同步备份工具</Description>
+    <Copyright>Copyright © 2026 ccDock</Copyright>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="assets\app.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Include="assets\app.ico" LogicalName="CcDock.app.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\vendor\syncthing\syncthing-windows-amd64-v2.1.7\syncthing.exe">
+      <Link>syncthing\syncthing.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\vendor\syncthing\syncthing-windows-amd64-v2.1.7\LICENSE.txt">
+      <Link>syncthing\LICENSE.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
