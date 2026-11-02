@@ -13,9 +13,15 @@ public sealed class SettingsPage : PageBase
     private readonly Label _engineVersion;
     private readonly Label _dataDirectory;
     private readonly RoundedButton _engineToggle;
+    private readonly CheckBox _globalDiscovery;
+    private readonly CheckBox _localDiscovery;
+    private readonly CheckBox _relays;
+    private readonly CheckBox _natEnabled;
+    private readonly Label _listenAddresses;
+    private readonly RoundedButton _saveConnection;
 
     public SettingsPage(MainForm host)
-        : base(host, "设置", "调整启动方式与同步引擎。")
+        : base(host, "设置", "调整启动方式、连接策略与同步引擎。")
     {
         _autoStart = Ui.Check("开机自动启动 ccDock（最小化到托盘）");
         _minimizeToTray = Ui.Check("最小化窗口时隐藏到系统托盘");
@@ -103,11 +109,65 @@ public sealed class SettingsPage : PageBase
         };
         AddRow(engine, 208);
 
+        _globalDiscovery = Ui.Check("启用全局发现（通过互联网查找对方设备）");
+        _localDiscovery = Ui.Check("启用局域网发现（同一网段自动发现）");
+        _relays = Ui.Check("允许中继转发（无法直连时使用，速度较慢）");
+        _natEnabled = Ui.Check("启用 NAT 穿透（UPnP / NAT-PMP）");
+
+        var connection = Ui.Card();
+        var connectionTitle = Ui.Text("高级连接", 11F, Theme.TextPrimary, FontStyle.Bold);
+        connectionTitle.Location = new Point(22, 16);
+        _globalDiscovery.Location = new Point(24, 48);
+        _localDiscovery.Location = new Point(24, 78);
+        _relays.Location = new Point(24, 108);
+        _natEnabled.Location = new Point(24, 138);
+
+        _listenAddresses = Ui.Text("监听地址：—", 9F, Theme.TextMuted);
+        _listenAddresses.AutoSize = false;
+        _listenAddresses.AutoEllipsis = true;
+        _listenAddresses.Location = new Point(24, 172);
+        _listenAddresses.Height = 20;
+
+        var connectionHint = Ui.Text(
+            "跨网段或下游网络：到“设备”页为对方设置静态地址（如 tcp://192.168.1.50:22000）。",
+            9F, Theme.TextMuted);
+        connectionHint.AutoSize = false;
+        connectionHint.AutoEllipsis = true;
+        connectionHint.Location = new Point(24, 198);
+        connectionHint.Height = 20;
+
+        _saveConnection = Ui.Button("保存连接设置", ButtonKind.Primary, null, 140);
+        _saveConnection.Height = 36;
+        _saveConnection.Click += async (_, _) => await SaveConnectionSettingsAsync();
+
+        connection.Controls.Add(connectionTitle);
+        connection.Controls.Add(_globalDiscovery);
+        connection.Controls.Add(_localDiscovery);
+        connection.Controls.Add(_relays);
+        connection.Controls.Add(_natEnabled);
+        connection.Controls.Add(_listenAddresses);
+        connection.Controls.Add(connectionHint);
+        connection.Controls.Add(_saveConnection);
+        connection.Resize += (_, _) =>
+        {
+            var width = connection.ClientSize.Width;
+            _saveConnection.Location = new Point(
+                width - _saveConnection.Width - Ui.Px(connection, 22),
+                Ui.Px(connection, 190));
+            _listenAddresses.Width = Math.Max(
+                Ui.Px(connection, 180),
+                width - Ui.Px(connection, 44));
+            connectionHint.Width = Math.Max(
+                Ui.Px(connection, 180),
+                width - _saveConnection.Width - Ui.Px(connection, 68));
+        };
+        AddRow(connection, 244);
+
         var about = Ui.Card();
         var aboutTitle = Ui.Text("关于 ccDock", 11F, Theme.TextPrimary, FontStyle.Bold);
         aboutTitle.Location = new Point(22, 16);
         var aboutLine = Ui.Text(
-            "ccDock 1.0.0 · 基于 Syncthing 2.1.7（MPL-2.0 开源许可）",
+            "ccDock 1.1.0 · 基于 Syncthing 2.1.7（MPL-2.0 开源许可）",
             9.5F, Theme.TextSecondary);
         aboutLine.Location = new Point(22, 48);
         var privacy = Ui.Wrap(
@@ -136,7 +196,7 @@ public sealed class SettingsPage : PageBase
         AddRow(about, 168);
     }
 
-    public override Task RefreshAsync()
+    public override async Task RefreshAsync()
     {
         var settings = Host.Settings.Current;
         _minimizeToTray.Checked = settings.MinimizeToTray;
@@ -171,7 +231,56 @@ public sealed class SettingsPage : PageBase
         _dataDirectory.Text = "数据目录：" + AppPaths.DataRoot;
         _engineToggle.Text = state == EngineState.Running ? "停止引擎" : "启动引擎";
         _engineToggle.Enabled = state != EngineState.Starting;
-        return Task.CompletedTask;
+
+        var running = Service.IsRunning;
+        _globalDiscovery.Enabled = running;
+        _localDiscovery.Enabled = running;
+        _relays.Enabled = running;
+        _natEnabled.Enabled = running;
+        _saveConnection.Enabled = running;
+
+        if (!running)
+        {
+            _listenAddresses.Text = "监听地址：—";
+            return;
+        }
+
+        try
+        {
+            var connection = await Service.GetConnectionSettingsAsync();
+            _globalDiscovery.Checked = connection.GlobalDiscovery;
+            _localDiscovery.Checked = connection.LocalDiscovery;
+            _relays.Checked = connection.Relays;
+            _natEnabled.Checked = connection.NatEnabled;
+            _listenAddresses.Text = connection.ListenAddresses.Count == 0
+                ? "监听地址：默认"
+                : "监听地址：" + string.Join("，", connection.ListenAddresses);
+        }
+        catch (Exception ex)
+        {
+            AppLog.Warn("Unable to read connection settings: " + ex.Message);
+            _listenAddresses.Text = "监听地址：无法读取";
+        }
+    }
+
+    private async Task SaveConnectionSettingsAsync()
+    {
+        if (!Service.IsRunning)
+        {
+            Host.ShowToast("同步引擎未运行，无法应用连接设置。", isError: true);
+            return;
+        }
+
+        var connection = new ConnectionSettings(
+            _globalDiscovery.Checked,
+            _localDiscovery.Checked,
+            _relays.Checked,
+            _natEnabled.Checked,
+            Array.Empty<string>());
+
+        await Host.RunTaskAsync(
+            async () => await Service.SaveConnectionSettingsAsync(connection),
+            "连接设置已保存。");
     }
 
     private void SaveSettings()

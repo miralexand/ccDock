@@ -205,36 +205,65 @@ public sealed class DevicesPage : PageBase
         id.Height = 18;
 
         var detail = view.Connected
-            ? string.IsNullOrWhiteSpace(view.Address) ? "已连接" : "已连接 · " + view.Address
-            : device.Paused ? "已暂停 · 未连接" : "未连接 · 等待对方上线";
-        var detailLabel = Ui.Text(detail, 9F, view.Connected ? Theme.Success : Theme.TextMuted);
+            ? (view.ViaRelay ? "中继连接" : "直连") +
+              (string.IsNullOrWhiteSpace(view.Address) ? string.Empty : " · " + view.Address)
+            : device.Paused
+                ? "已暂停 · 未连接"
+                : "未连接 · 等待对方上线或添加静态地址";
+        var detailLabel = Ui.Text(
+            detail,
+            9F,
+            view.Connected
+                ? (view.ViaRelay ? Theme.Warning : Theme.Success)
+                : Theme.TextMuted);
         detailLabel.AutoSize = false;
         detailLabel.AutoEllipsis = true;
         detailLabel.Location = new Point(52, 66);
         detailLabel.Height = 18;
 
         var badge = new Badge();
-        badge.Apply(
-            view.Connected ? "已连接" : "未连接",
-            view.Connected ? Theme.SuccessSoft : ColorTranslator.FromHtml("#F2F4F7"),
-            view.Connected ? Theme.Success : Theme.TextMuted);
+        if (view.Connected)
+        {
+            if (view.ViaRelay)
+            {
+                badge.Apply("中继连接", Theme.WarningSoft, Theme.Warning);
+            }
+            else
+            {
+                badge.Apply("直连", Theme.SuccessSoft, Theme.Success);
+            }
+        }
+        else
+        {
+            badge.Apply("未连接", ColorTranslator.FromHtml("#F2F4F7"), Theme.TextMuted);
+        }
+
+        var configure = Ui.Button("连接设置", ButtonKind.Ghost, Glyphs.Settings, 104);
+        configure.Height = 30;
+        configure.Click += async (_, _) => await Host.EditDeviceAddressesAsync(device);
 
         card.Controls.Add(glyph);
         card.Controls.Add(name);
         card.Controls.Add(id);
         card.Controls.Add(detailLabel);
         card.Controls.Add(badge);
+        card.Controls.Add(configure);
         card.Resize += (_, _) =>
         {
             var width = card.ClientSize.Width;
             badge.Location = new Point(
                 width - badge.Width - Ui.Px(card, 22),
                 Ui.Px(card, 22));
+            configure.Location = new Point(
+                width - configure.Width - Ui.Px(card, 22),
+                Ui.Px(card, 52));
             name.Width = Math.Max(
                 Ui.Px(card, 100),
                 width - Ui.Px(card, 52) - badge.Width - Ui.Px(card, 48));
             id.Width = Math.Max(Ui.Px(card, 100), width - Ui.Px(card, 74));
-            detailLabel.Width = Math.Max(Ui.Px(card, 100), width - Ui.Px(card, 74));
+            detailLabel.Width = Math.Max(
+                Ui.Px(card, 100),
+                width - Ui.Px(card, 52) - configure.Width - Ui.Px(card, 40));
         };
 
         return card;
