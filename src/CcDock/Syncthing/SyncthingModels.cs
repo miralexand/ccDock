@@ -44,7 +44,19 @@ public sealed record DeviceView(
     DeviceInfo Device,
     bool IsSelf,
     bool Connected,
-    string Address);
+    string Address,
+    string ConnectionType,
+    bool ViaRelay)
+{
+    public bool IsDirect => Connected && !ViaRelay;
+}
+
+public sealed record ConnectionSettings(
+    bool GlobalDiscovery,
+    bool LocalDiscovery,
+    bool Relays,
+    bool NatEnabled,
+    IReadOnlyList<string> ListenAddresses);
 
 public sealed record PendingDeviceInfo(string DeviceId, string Name, string Address, DateTimeOffset? SeenAt);
 

@@ -238,13 +238,128 @@ public sealed class SyncthingService : IAsyncDisposable
             var connection = connectionMap?[device.DeviceId] as JsonObject;
             var connected = isSelf || (connection is not null && JsonUtil.GetBool(connection, "connected"));
             var address = connection is null ? string.Empty : JsonUtil.GetString(connection, "address");
-            views.Add(new DeviceView(device, isSelf, connected, address));
+            var connectionType = connection is null ? string.Empty : JsonUtil.GetString(connection, "type");
+            var viaRelay = connectionType.StartsWith("relay", StringComparison.OrdinalIgnoreCase)
+                || (connection is not null && JsonUtil.GetBool(connection, "relay"));
+            views.Add(new DeviceView(device, isSelf, connected, address, connectionType, viaRelay));
         }
 
         return views
             .OrderBy(view => view.IsSelf ? 0 : 1)
             .ThenBy(view => view.Device.Name, StringComparer.CurrentCultureIgnoreCase)
             .ToList();
+    }
+
+    public async Task<ConnectionSettings> GetConnectionSettingsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        var options = await Client.GetOptionsAsync(cancellationToken).ConfigureAwait(false);
+        return new ConnectionSettings(
+            JsonUtil.GetBool(options, "globalAnnounceEnabled", true),
+            JsonUtil.GetBool(options, "localAnnounceEnabled", true),
+            JsonUtil.GetBool(options, "relaysEnabled", true),
+            JsonUtil.GetBool(options, "natEnabled", true),
+            ReadStringArray(options, "listenAddresses"));
+    }
+
+    public async Task SaveConnectionSettingsAsync(
+        ConnectionSettings settings, CancellationToken cancellationToken = default)
+    {
+        await _configGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var patch = new JsonObject
+            {
+                ["globalAnnounceEnabled"] = settings.GlobalDiscovery,
+                ["localAnnounceEnabled"] = settings.LocalDiscovery,
+                ["relaysEnabled"] = settings.Relays,
+                ["natEnabled"] = settings.NatEnabled
+            };
+            await Client.PatchOptionsAsync(patch, cancellationToken).ConfigureAwait(false);
+            AppLog.Info(
+                $"Connection settings saved. global={settings.GlobalDiscovery} " +
+                $"local={settings.LocalDiscovery} relays={settings.Relays} nat={settings.NatEnabled}");
+        }
+        finally
+        {
+            _configGate.Release();
+        }
+    }
+
+    public async Task SetDeviceAddressesAsync(
+        string deviceId,
+        IEnumerable<string> addresses,
+        CancellationToken cancellationToken = default)
+    {
+        if (!DeviceIdValidator.TryNormalize(deviceId, out var normalized, out var error))
+        {
+            throw new SyncthingException(error ?? "设备 ID 无效。");
+        }
+
+        if (string.Equals(normalized, _deviceId, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new SyncthingException("本机地址由监听设置决定，不能在这里修改。");
+        }
+
+        var cleaned = addresses
+            .Select(address => address.Trim())
+            .Where(address => address.Length > 0)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (cleaned.Count == 0)
+        {
+            cleaned.Add("dynamic");
+        }
+
+        foreach (var address in cleaned)
+        {
+            if (!IsValidDeviceAddress(address))
+            {
+                throw new SyncthingException(
+                    $"地址“{address}”格式无效。示例：dynamic、tcp://192.168.1.50:22000、quic://192.168.1.50:22000");
+            }
+        }
+
+        await _configGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+        try
+        {
+            var client = Client;
+            var config = await client.GetConfigAsync(cancellationToken).ConfigureAwait(false);
+            if (JsonUtil.GetArray(config, "devices") is not { } devices)
+            {
+                throw new SyncthingException("无法读取设备配置。");
+            }
+
+            foreach (var item in devices)
+            {
+                if (item is not JsonObject device ||
+                    !string.Equals(
+                        JsonUtil.GetString(device, "deviceID"),
+                        normalized,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var array = new JsonArray();
+                foreach (var address in cleaned)
+                {
+                    array.Add(address);
+                }
+                device["addresses"] = array;
+                await client.PutDeviceAsync(normalized, device, cancellationToken).ConfigureAwait(false);
+                AppLog.Info(
+                    $"Device addresses updated. device={normalized} addresses={string.Join(",", cleaned)}");
+                return;
+            }
+
+            throw new SyncthingException("设备不存在，请先添加该设备。");
+        }
+        finally
+        {
+            _configGate.Release();
+        }
     }
 
     public async Task<(IReadOnlyList<PendingDeviceInfo> Devices, IReadOnlyList<PendingFolderOffer> Folders)>
@@ -1011,6 +1126,54 @@ public sealed class SyncthingService : IAsyncDisposable
                     $"该文件夹与已有任务“{folder.Label}”的路径重叠，请选择其他文件夹。");
             }
         }
+    }
+
+    private static IReadOnlyList<string> ReadStringArray(JsonObject source, string property)
+    {
+        var result = new List<string>();
+        if (JsonUtil.GetArray(source, property) is not { } array)
+        {
+            return result;
+        }
+
+        foreach (var item in array)
+        {
+            try
+            {
+                var value = item?.GetValue<string>();
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    result.Add(value);
+                }
+            }
+            catch
+            {
+                // Ignore malformed entries.
+            }
+        }
+
+        return result;
+    }
+
+    private static bool IsValidDeviceAddress(string address)
+    {
+        if (string.Equals(address, "dynamic", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        if (!Uri.TryCreate(address, UriKind.Absolute, out var uri))
+        {
+            return false;
+        }
+
+        return uri.Scheme.ToLowerInvariant() switch
+        {
+            "tcp" or "quic" =>
+                !string.IsNullOrWhiteSpace(uri.Host) && uri.Port > 0 && uri.Port <= 65535,
+            "relay" => true,
+            _ => false
+        };
     }
 
     private static string NormalizePath(string path)

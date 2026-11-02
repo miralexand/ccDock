@@ -277,6 +277,21 @@ public sealed class MainForm : Form
         }
     }
 
+    public async Task EditDeviceAddressesAsync(DeviceInfo device)
+    {
+        if (!EnsureEngineRunning())
+        {
+            return;
+        }
+
+        using var dialog = new DeviceAddressDialog(_service, device);
+        if (dialog.ShowDialog(this) == DialogResult.OK)
+        {
+            ShowToast("设备连接地址已更新。");
+            await RefreshCurrentPageAsync();
+        }
+    }
+
     public async Task RenameDeviceAsync()
     {
         if (!EnsureEngineRunning())
@@ -528,7 +543,7 @@ public sealed class MainForm : Form
         };
         var versionLabel = new Label
         {
-            Text = "ccDock 1.0.0",
+            Text = "ccDock 1.1.0",
             AutoSize = false,
             AutoEllipsis = true,
             Font = Theme.UIFont(9F),
@@ -658,7 +673,7 @@ public sealed class MainForm : Form
         _stateText.Text = text;
         _stateText.ForeColor = _service.State == EngineState.Error ? Theme.Danger : Theme.SidebarText;
         _versionLabel.Text = string.IsNullOrWhiteSpace(_service.Version)
-            ? "ccDock 1.0.0"
+            ? "ccDock 1.1.0"
             : "Syncthing " + _service.Version;
     }
 

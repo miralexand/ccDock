@@ -72,6 +72,12 @@ public sealed class SyncthingClient : IDisposable
     public async Task<JsonObject> GetConfigAsync(CancellationToken cancellationToken = default)
         => await GetObjectAsync("/rest/config", cancellationToken).ConfigureAwait(false);
 
+    public async Task<JsonObject> GetOptionsAsync(CancellationToken cancellationToken = default)
+        => await GetObjectAsync("/rest/config/options", cancellationToken).ConfigureAwait(false);
+
+    public Task PatchOptionsAsync(JsonObject options, CancellationToken cancellationToken = default)
+        => SendNoContentAsync(HttpMethod.Patch, "/rest/config/options", options, cancellationToken);
+
     public async Task<JsonObject> GetDeviceDefaultsAsync(CancellationToken cancellationToken = default)
         => await GetObjectAsync("/rest/config/defaults/device", cancellationToken).ConfigureAwait(false);
 
