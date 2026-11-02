@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Windows x64
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
+
+      - name: Fetch Syncthing v2.1.7
+        shell: pwsh
+        run: ./scripts/fetch-syncthing.ps1
+
+      - name: Build portable package
+        shell: pwsh
+        run: ./build.ps1 -SelfContained
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ccDock-win-x64
+          path: dist/ccDock
+          if-no-files-found: error
+          retention-days: 30
