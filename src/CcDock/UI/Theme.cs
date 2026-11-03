@@ -11,16 +11,22 @@ public static class Theme
     public static readonly Color SidebarActive = ColorTranslator.FromHtml("#2563EB");
     public static readonly Color SidebarText = ColorTranslator.FromHtml("#D1D5DB");
     public static readonly Color SidebarMuted = ColorTranslator.FromHtml("#9CA3AF");
+    // Brighter variants keep status dots and error text legible on #111827.
+    public static readonly Color SidebarSuccess = ColorTranslator.FromHtml("#34D399");
+    public static readonly Color SidebarWarning = ColorTranslator.FromHtml("#F5B84D");
+    public static readonly Color SidebarDanger = ColorTranslator.FromHtml("#F97066");
     public static readonly Color Card = Color.White;
     public static readonly Color CardBorder = ColorTranslator.FromHtml("#E4E9F2");
     public static readonly Color TextPrimary = ColorTranslator.FromHtml("#111827");
-    public static readonly Color TextSecondary = ColorTranslator.FromHtml("#667085");
-    public static readonly Color TextMuted = ColorTranslator.FromHtml("#98A2B3");
+    // Secondary and muted text need at least 4.5:1 contrast on the light card
+    // background (#FFFFFF) to stay readable at small point sizes.
+    public static readonly Color TextSecondary = ColorTranslator.FromHtml("#475467");
+    public static readonly Color TextMuted = ColorTranslator.FromHtml("#667085");
     public static readonly Color Primary = ColorTranslator.FromHtml("#2563EB");
     public static readonly Color PrimaryHover = ColorTranslator.FromHtml("#1D4ED8");
     public static readonly Color PrimaryPressed = ColorTranslator.FromHtml("#1E40AF");
     public static readonly Color PrimarySoft = ColorTranslator.FromHtml("#EFF4FF");
-    public static readonly Color Success = ColorTranslator.FromHtml("#12915B");
+    public static readonly Color Success = ColorTranslator.FromHtml("#0B7A4B");
     public static readonly Color SuccessSoft = ColorTranslator.FromHtml("#E9F9F1");
     public static readonly Color Warning = ColorTranslator.FromHtml("#B45309");
     public static readonly Color WarningSoft = ColorTranslator.FromHtml("#FFF7E6");
@@ -79,7 +85,7 @@ public static class Theme
 
     public static void ConfigureForm(Form form)
     {
-        form.Font = UIFont(10F);
+        form.Font = UIFont(10.5F);
         form.BackColor = PageBackground;
         form.ForeColor = TextPrimary;
         form.Icon = AppIcon;

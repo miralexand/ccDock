@@ -24,10 +24,10 @@ public sealed class AcceptFolderDialog : DialogBase
             offer.ReceiveEncrypted
                 ? "这是一个加密共享文件夹，内容只能由接收方解密。"
                 : "接收后，该文件夹会以“仅接收”模式保存，对方的修改会同步到本机，本机的修改不会回传。",
-            Content.Width, 9.5F, Theme.TextMuted);
+            Content.Width, 10F, Theme.TextMuted);
         summary.Location = new Point(0, 0);
 
-        var pathLabel = Ui.Text("保存到", 9.5F, Theme.TextSecondary);
+        var pathLabel = Ui.Text("保存到", 10F, Theme.TextSecondary);
         pathLabel.Location = new Point(0, 54);
         _path = Ui.Input("选择保存位置");
         _path.Location = new Point(0, 74);
@@ -43,7 +43,7 @@ public sealed class AcceptFolderDialog : DialogBase
 
         var hint = Ui.Wrap(
             "建议选择一个新的空文件夹作为保存位置，避免与已有文件混淆。",
-            Content.Width, 9F, Theme.TextMuted);
+            Content.Width, 9.5F, Theme.TextMuted);
         hint.Location = new Point(0, 158);
 
         Content.Controls.Add(summary);

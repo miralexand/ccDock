@@ -20,7 +20,7 @@ internal static class Ui
     }
 
     public static Label Text(
-        string text, float size = 10F, Color? color = null, FontStyle style = FontStyle.Regular)
+        string text, float size = 10.5F, Color? color = null, FontStyle style = FontStyle.Regular)
         => new()
         {
             Text = text,
@@ -33,7 +33,7 @@ internal static class Ui
         };
 
     public static Label Wrap(
-        string text, int width, float size = 10F, Color? color = null, FontStyle style = FontStyle.Regular)
+        string text, int width, float size = 10.5F, Color? color = null, FontStyle style = FontStyle.Regular)
     {
         var label = Text(text, size, color, style);
         label.MaximumSize = new Size(Math.Max(40, width), 0);
@@ -66,7 +66,7 @@ internal static class Ui
     {
         var box = new TextBox
         {
-            Font = Theme.UIFont(10F),
+            Font = Theme.UIFont(10.5F),
             BorderStyle = BorderStyle.FixedSingle,
             BackColor = Theme.InputBackground,
             ForeColor = Theme.TextPrimary,
@@ -87,7 +87,7 @@ internal static class Ui
         {
             DropDownStyle = ComboBoxStyle.DropDownList,
             FlatStyle = FlatStyle.Flat,
-            Font = Theme.UIFont(10F),
+            Font = Theme.UIFont(10.5F),
             BackColor = Theme.Card,
             ForeColor = Theme.TextPrimary,
             Height = 32
@@ -98,7 +98,7 @@ internal static class Ui
         {
             Text = text,
             AutoSize = true,
-            Font = Theme.UIFont(10F),
+            Font = Theme.UIFont(10.5F),
             ForeColor = Theme.TextPrimary,
             BackColor = Color.Transparent,
             Cursor = Cursors.Hand,
@@ -122,11 +122,11 @@ internal static class Ui
         // DPI-scaled, so all metrics are converted to device pixels here.
         row.Height = Px(row, 58);
 
-        var titleLabel = Text(title, 10F, Theme.TextPrimary, FontStyle.Bold);
+        var titleLabel = Text(title, 10.5F, Theme.TextPrimary, FontStyle.Bold);
         titleLabel.AutoSize = false;
         titleLabel.AutoEllipsis = true;
 
-        var subtitleLabel = Text(subtitle, 9F, Theme.TextMuted);
+        var subtitleLabel = Text(subtitle, 9.5F, Theme.TextMuted);
         subtitleLabel.AutoSize = false;
         subtitleLabel.AutoEllipsis = true;
 
@@ -148,8 +148,8 @@ internal static class Ui
         {
             var buttonArea = buttons.Count * Px(row, 78) + Math.Max(0, buttons.Count - 1) * Px(row, 6);
             var textWidth = Math.Max(Px(row, 60), row.ClientSize.Width - buttonArea - Px(row, 24));
-            titleLabel.SetBounds(Px(row, 8), Px(row, 6), textWidth, Px(row, 20));
-            subtitleLabel.SetBounds(Px(row, 8), Px(row, 28), textWidth, Px(row, 18));
+            titleLabel.SetBounds(Px(row, 8), Px(row, 5), textWidth, Px(row, 22));
+            subtitleLabel.SetBounds(Px(row, 8), Px(row, 28), textWidth, Px(row, 20));
             var x = row.ClientSize.Width - Px(row, 8) - buttonArea;
             foreach (var button in buttons)
             {
@@ -170,7 +170,7 @@ internal static class Ui
         form.StartPosition = FormStartPosition.CenterParent;
         form.BackColor = Theme.PageBackground;
         form.ForeColor = Theme.TextPrimary;
-        form.Font = Theme.UIFont(10F);
+        form.Font = Theme.UIFont(10.5F);
         form.AutoScaleMode = AutoScaleMode.Dpi;
         form.AutoScaleDimensions = new SizeF(96F, 96F);
         form.Icon = Theme.AppIcon;

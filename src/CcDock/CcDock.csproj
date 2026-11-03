@@ -11,8 +11,8 @@
     <RootNamespace>CcDock</RootNamespace>
     <ApplicationIcon>assets\app.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>1.1.0</Version>
-    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.1.1</Version>
+    <FileVersion>1.1.1.0</FileVersion>
     <Product>ccDock</Product>
     <Company>ccDock</Company>
     <Description>基于 Syncthing 的 Windows 文件夹同步备份工具</Description>

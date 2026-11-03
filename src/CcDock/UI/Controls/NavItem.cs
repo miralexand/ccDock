@@ -18,7 +18,7 @@ public class NavItem : Control
         SetStyle(ControlStyles.Selectable, false);
         BackColor = Theme.SidebarBackground;
         ForeColor = Theme.SidebarText;
-        Font = Theme.UIFont(10.5F);
+        Font = Theme.UIFont(11F);
         Height = 46;
         Cursor = Cursors.Hand;
     }

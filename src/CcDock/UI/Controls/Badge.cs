@@ -13,7 +13,7 @@ public class Badge : Control
             ControlStyles.SupportsTransparentBackColor,
             true);
         BackColor = Color.Transparent;
-        Font = Theme.UIFont(8.5F, FontStyle.Bold);
+        Font = Theme.UIFont(9F, FontStyle.Bold);
         Height = 22;
         Width = 64;
         Text = string.Empty;

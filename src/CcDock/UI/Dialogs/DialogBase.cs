@@ -23,7 +23,7 @@ public abstract class DialogBase : Form
         heading.Location = new Point(28, 22);
         Controls.Add(heading);
 
-        var caption = Ui.Wrap(description, size.Width - 56, 10F, Theme.TextSecondary);
+        var caption = Ui.Wrap(description, size.Width - 56, 10.5F, Theme.TextSecondary);
         caption.Location = new Point(28, 56);
         Controls.Add(caption);
 
@@ -49,18 +49,18 @@ public abstract class DialogBase : Form
         };
         footer.Controls.Add(line);
 
-        _error = Ui.Text(string.Empty, 9.5F, Theme.Danger);
+        _error = Ui.Text(string.Empty, 10F, Theme.Danger);
         _error.AutoSize = false;
         _error.AutoEllipsis = true;
         _error.Location = new Point(28, 27);
-        _error.Size = new Size(size.Width - 340, 34);
+        _error.Size = new Size(size.Width - 284, 34);
         _error.Visible = false;
         footer.Controls.Add(_error);
 
         var buttons = new FlowLayoutPanel
         {
             Dock = DockStyle.Right,
-            Width = 280,
+            Width = 244,
             FlowDirection = FlowDirection.RightToLeft,
             WrapContents = false,
             BackColor = Color.Transparent,

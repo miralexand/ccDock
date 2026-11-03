@@ -43,9 +43,9 @@ public sealed class DevicesPage : PageBase
             AddScaledRow(BuildSelfCard(self), 148);
 
             var others = views.Where(view => !view.IsSelf).ToList();
-            var section = Ui.Text("其他设备", 11F, Theme.TextPrimary, FontStyle.Bold);
+            var section = Ui.Text("其他设备", 11.5F, Theme.TextPrimary, FontStyle.Bold);
             section.TextAlign = ContentAlignment.MiddleLeft;
-            AddScaledPlainRow(section, 26);
+            AddScaledPlainRow(section, 28);
 
             if (others.Count == 0)
             {
@@ -68,9 +68,9 @@ public sealed class DevicesPage : PageBase
 
             if (pending.Devices.Count > 0)
             {
-                var pendingTitle = Ui.Text("待确认的设备请求", 11F, Theme.TextPrimary, FontStyle.Bold);
+                var pendingTitle = Ui.Text("待确认的设备请求", 11.5F, Theme.TextPrimary, FontStyle.Bold);
                 pendingTitle.TextAlign = ContentAlignment.MiddleLeft;
-                AddScaledPlainRow(pendingTitle, 26);
+                AddScaledPlainRow(pendingTitle, 28);
 
                 var rows = new TableLayoutPanel
                 {
@@ -124,12 +124,12 @@ public sealed class DevicesPage : PageBase
     private Control BuildSelfCard(DeviceView? self)
     {
         var card = Ui.Card();
-        var title = Ui.Text("本机", 11F, Theme.TextPrimary, FontStyle.Bold);
+        var title = Ui.Text("本机", 11.5F, Theme.TextPrimary, FontStyle.Bold);
         title.Location = new Point(22, 16);
 
         var name = Ui.Text(
             string.IsNullOrWhiteSpace(Service.DeviceName) ? Environment.MachineName : Service.DeviceName,
-            13F, Theme.TextPrimary, FontStyle.Bold);
+            13.5F, Theme.TextPrimary, FontStyle.Bold);
         name.AutoSize = false;
         name.AutoEllipsis = true;
         name.Location = new Point(22, 42);
@@ -137,8 +137,8 @@ public sealed class DevicesPage : PageBase
 
         var id = Ui.Text(
             string.IsNullOrWhiteSpace(Service.DeviceId) ? "—" : Service.DeviceId,
-            9.5F, Theme.TextMuted);
-        id.Font = Theme.MonoFont(9.5F);
+            10F, Theme.TextMuted);
+        id.Font = Theme.MonoFont(10F);
         id.AutoSize = false;
         id.AutoEllipsis = true;
         id.Location = new Point(22, 76);
@@ -146,7 +146,7 @@ public sealed class DevicesPage : PageBase
 
         var hint = Ui.Text(
             "把这台电脑的设备 ID 发给对方，对方添加后即可配对。",
-            9F, Theme.TextMuted);
+            9.5F, Theme.TextMuted);
         hint.Location = new Point(22, 106);
 
         var rename = Ui.Button("重命名", ButtonKind.Secondary, null, 96);
@@ -191,18 +191,18 @@ public sealed class DevicesPage : PageBase
         var glyph = Ui.Text(Glyphs.Device, 16F, Theme.Primary);
         glyph.Location = new Point(22, 30);
 
-        var name = Ui.Text(device.Name, 12F, Theme.TextPrimary, FontStyle.Bold);
+        var name = Ui.Text(device.Name, 12.5F, Theme.TextPrimary, FontStyle.Bold);
         name.AutoSize = false;
         name.AutoEllipsis = true;
-        name.Location = new Point(52, 18);
-        name.Height = 22;
+        name.Location = new Point(52, 16);
+        name.Height = 24;
 
-        var id = Ui.Text(device.DeviceId, 9F, Theme.TextMuted);
-        id.Font = Theme.MonoFont(9F);
+        var id = Ui.Text(device.DeviceId, 9.5F, Theme.TextMuted);
+        id.Font = Theme.MonoFont(9.5F);
         id.AutoSize = false;
         id.AutoEllipsis = true;
         id.Location = new Point(52, 44);
-        id.Height = 18;
+        id.Height = 20;
 
         var detail = view.Connected
             ? (view.ViaRelay ? "中继连接" : "直连") +
@@ -212,14 +212,14 @@ public sealed class DevicesPage : PageBase
                 : "未连接 · 等待对方上线或添加静态地址";
         var detailLabel = Ui.Text(
             detail,
-            9F,
+            9.5F,
             view.Connected
                 ? (view.ViaRelay ? Theme.Warning : Theme.Success)
                 : Theme.TextMuted);
         detailLabel.AutoSize = false;
         detailLabel.AutoEllipsis = true;
         detailLabel.Location = new Point(52, 66);
-        detailLabel.Height = 18;
+        detailLabel.Height = 20;
 
         var badge = new Badge();
         if (view.Connected)

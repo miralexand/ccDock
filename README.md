@@ -55,12 +55,12 @@ powershell -ExecutionPolicy Bypass -File .\build.ps1 -SelfContained
 
 在 Actions 运行页面即可下载构建好的可执行目录。
 
-推送形如 `v1.1.0` 的 tag 时，workflow 还会把构建结果打包为 zip，
+推送形如 `v1.1.1` 的 tag 时，workflow 还会把构建结果打包为 zip，
 并自动创建对应的 GitHub Release:
 
 ```powershell
-git tag v1.1.0
-git push origin v1.1.0
+git tag v1.1.1
+git push origin v1.1.1
 ```
 
 也可以直接开发运行：

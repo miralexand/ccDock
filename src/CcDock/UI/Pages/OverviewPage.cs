@@ -37,13 +37,13 @@ public sealed class OverviewPage : PageBase
         var engineCard = Ui.Card();
         _engineDot = Ui.Text("●", 18F, Theme.Success);
         _engineDot.Location = new Point(22, 20);
-        _engineTitle = Ui.Text("同步引擎", 12.5F, Theme.TextPrimary, FontStyle.Bold);
+        _engineTitle = Ui.Text("同步引擎", 13F, Theme.TextPrimary, FontStyle.Bold);
         _engineTitle.Location = new Point(52, 18);
-        _engineDetail = Ui.Text(string.Empty, 9.5F, Theme.TextSecondary);
+        _engineDetail = Ui.Text(string.Empty, 10F, Theme.TextSecondary);
         _engineDetail.AutoSize = false;
         _engineDetail.AutoEllipsis = true;
         _engineDetail.Location = new Point(53, 46);
-        _engineError = Ui.Text(string.Empty, 9F, Theme.Danger);
+        _engineError = Ui.Text(string.Empty, 9.5F, Theme.Danger);
         _engineError.AutoSize = false;
         _engineError.AutoEllipsis = true;
         _engineError.Visible = false;
@@ -93,9 +93,9 @@ public sealed class OverviewPage : PageBase
 
         // Local device identity card.
         var deviceCard = Ui.Card();
-        var deviceTitle = Ui.Text("本机设备 ID", 11F, Theme.TextPrimary, FontStyle.Bold);
+        var deviceTitle = Ui.Text("本机设备 ID", 11.5F, Theme.TextPrimary, FontStyle.Bold);
         deviceTitle.Location = new Point(22, 16);
-        _deviceName = Ui.Text("设备名称：—", 9.5F, Theme.TextSecondary);
+        _deviceName = Ui.Text("设备名称：—", 10F, Theme.TextSecondary);
         _deviceName.AutoSize = false;
         _deviceName.AutoEllipsis = true;
         _deviceName.Location = new Point(22, 42);
@@ -108,7 +108,7 @@ public sealed class OverviewPage : PageBase
         var copyButton = Ui.Button("复制", ButtonKind.Secondary, Glyphs.Copy, 88);
         copyButton.Height = 34;
         copyButton.Click += (_, _) => CopyDeviceId();
-        var idHint = Ui.Text("在对方电脑输入此设备 ID 即可建立连接。", 9F, Theme.TextMuted);
+        var idHint = Ui.Text("在对方电脑输入此设备 ID 即可建立连接。", 9.5F, Theme.TextMuted);
         idHint.Location = new Point(22, 100);
         deviceCard.Controls.Add(deviceTitle);
         deviceCard.Controls.Add(_deviceName);
@@ -132,7 +132,7 @@ public sealed class OverviewPage : PageBase
 
         // Pending requests card.
         var pendingCard = Ui.Card();
-        var pendingTitle = Ui.Text("待处理的分享请求", 11F, Theme.TextPrimary, FontStyle.Bold);
+        var pendingTitle = Ui.Text("待处理的分享请求", 11.5F, Theme.TextPrimary, FontStyle.Bold);
         pendingTitle.Location = new Point(22, 16);
         _pendingHost = new Panel
         {
@@ -154,7 +154,7 @@ public sealed class OverviewPage : PageBase
         _pendingHost.Controls.Add(_pendingList);
         _pendingEmpty = Ui.Wrap(
             "暂无待处理的请求。当对方电脑添加本机或共享文件夹时，会显示在这里。",
-            640, 9.5F, Theme.TextMuted);
+            640, 10F, Theme.TextMuted);
         _pendingEmpty.Location = new Point(24, 58);
         pendingCard.Controls.Add(pendingTitle);
         pendingCard.Controls.Add(_pendingHost);
@@ -223,7 +223,7 @@ public sealed class OverviewPage : PageBase
 
         var value = Ui.Text("—", 21F, Theme.TextPrimary, FontStyle.Bold);
         value.Location = new Point(20, 14);
-        var label = Ui.Text(caption, 9.5F, Theme.TextSecondary);
+        var label = Ui.Text(caption, 10F, Theme.TextSecondary);
         label.Location = new Point(21, 54);
         card.Controls.Add(value);
         card.Controls.Add(label);

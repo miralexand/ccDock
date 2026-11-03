@@ -7,7 +7,8 @@ public enum ButtonKind
     Primary,
     Secondary,
     Ghost,
-    Danger
+    Danger,
+    DangerGhost
 }
 
 public class RoundedButton : Button
@@ -27,7 +28,7 @@ public class RoundedButton : Button
         FlatAppearance.BorderSize = 0;
         BackColor = Theme.Card;
         ForeColor = Color.White;
-        Font = Theme.UIFont(10F);
+        Font = Theme.UIFont(10.5F);
         Cursor = Cursors.Hand;
         Height = 40;
         Kind = ButtonKind.Primary;
@@ -152,6 +153,10 @@ public class RoundedButton : Button
             ButtonKind.Danger => (
                 disabled ? ColorTranslator.FromHtml("#F3B7B2") : _pressed ? ColorTranslator.FromHtml("#B42318") : _hover ? ColorTranslator.FromHtml("#C9271B") : Theme.Danger,
                 Color.White,
+                Color.Transparent),
+            ButtonKind.DangerGhost => (
+                disabled ? Color.Transparent : _pressed ? ColorTranslator.FromHtml("#FEE4E2") : _hover ? Theme.DangerSoft : Color.Transparent,
+                disabled ? Theme.TextMuted : Theme.Danger,
                 Color.Transparent),
             _ => (Theme.Card, Theme.TextPrimary, Theme.CardBorder)
         };

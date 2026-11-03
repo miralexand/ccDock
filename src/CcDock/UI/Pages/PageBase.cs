@@ -33,7 +33,7 @@ public abstract class PageBase : UserControl
             Margin = Padding.Empty
         };
         root.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
+        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 100F));
         root.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
         Controls.Add(root);
 
@@ -45,13 +45,13 @@ public abstract class PageBase : UserControl
         };
         root.Controls.Add(_header, 0, 0);
 
-        _title = Ui.Text(title, 19F, Theme.TextPrimary, FontStyle.Bold);
-        _title.Location = new Point(28, 20);
-        _subtitle = Ui.Text(subtitle, 10F, Theme.TextSecondary);
+        _title = Ui.Text(title, 20F, Theme.TextPrimary, FontStyle.Bold);
+        _title.Location = new Point(28, 18);
+        _subtitle = Ui.Text(subtitle, 10.5F, Theme.TextSecondary);
         _subtitle.AutoSize = false;
         _subtitle.AutoEllipsis = true;
-        _subtitle.Location = new Point(29, 54);
-        _subtitle.Height = 24;
+        _subtitle.Location = new Point(29, 56);
+        _subtitle.Height = 26;
 
         _actions = new FlowLayoutPanel
         {
@@ -161,12 +161,13 @@ public abstract class PageBase : UserControl
         var card = Ui.Card();
         var glyphLabel = Ui.Text(glyph, 22F, Theme.Primary);
         glyphLabel.Location = new Point(24, 22);
-        var titleLabel = Ui.Text(title, 12.5F, Theme.TextPrimary, FontStyle.Bold);
-        titleLabel.Location = new Point(66, 26);
-        var messageLabel = Ui.Text(message, 9.5F, Theme.TextSecondary);
+        var titleLabel = Ui.Text(title, 13F, Theme.TextPrimary, FontStyle.Bold);
+        titleLabel.Location = new Point(66, 24);
+        var messageLabel = Ui.Text(message, 10F, Theme.TextSecondary);
         messageLabel.AutoSize = false;
         messageLabel.AutoEllipsis = true;
         messageLabel.Location = new Point(26, 66);
+        messageLabel.Height = 26;
         card.Controls.Add(glyphLabel);
         card.Controls.Add(titleLabel);
         card.Controls.Add(messageLabel);
@@ -193,15 +194,15 @@ public abstract class PageBase : UserControl
     private void LayoutHeader()
     {
         var x = Math.Max(Ui.Px(_header, 28), _header.ClientSize.Width - _actions.Width - Ui.Px(_header, 24));
-        _actions.Location = new Point(x, Ui.Px(_header, 26));
+        _actions.Location = new Point(x, Ui.Px(_header, 28));
 
         var subtitleWidth = Math.Max(
             Ui.Px(_header, 160),
             _actions.Left - Ui.Px(_header, 29) - Ui.Px(_header, 16));
         _subtitle.SetBounds(
             Ui.Px(_header, 29),
-            Ui.Px(_header, 54),
+            Ui.Px(_header, 56),
             subtitleWidth,
-            Ui.Px(_header, 22));
+            Ui.Px(_header, 24));
     }
 }

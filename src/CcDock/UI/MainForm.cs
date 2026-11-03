@@ -40,7 +40,7 @@ public sealed class MainForm : Form
         Text = "ccDock";
         BackColor = Theme.PageBackground;
         ForeColor = Theme.TextPrimary;
-        Font = Theme.UIFont(10F);
+        Font = Theme.UIFont(10.5F);
         Icon = Theme.AppIcon;
         AutoScaleMode = AutoScaleMode.Dpi;
         DoubleBuffered = true;
@@ -103,7 +103,7 @@ public sealed class MainForm : Form
             Dock = DockStyle.Fill,
             TextAlign = ContentAlignment.MiddleLeft,
             AutoEllipsis = true,
-            Font = Theme.UIFont(10F),
+            Font = Theme.UIFont(10.5F),
             ForeColor = Theme.Success,
             BackColor = Color.Transparent
         };
@@ -501,7 +501,7 @@ public sealed class MainForm : Form
         {
             Text = "文件夹同步备份",
             AutoSize = true,
-            Font = Theme.UIFont(9F),
+            Font = Theme.UIFont(9.5F),
             ForeColor = Theme.SidebarMuted,
             BackColor = Color.Transparent,
             Location = new Point(67, 46)
@@ -529,7 +529,7 @@ public sealed class MainForm : Form
             Text = "●",
             AutoSize = true,
             Font = Theme.UIFont(11F),
-            ForeColor = Theme.TextMuted,
+            ForeColor = Theme.SidebarMuted,
             BackColor = Color.Transparent
         };
         var stateText = new Label
@@ -537,16 +537,16 @@ public sealed class MainForm : Form
             Text = "同步引擎未启动",
             AutoSize = false,
             AutoEllipsis = true,
-            Font = Theme.UIFont(9.5F),
+            Font = Theme.UIFont(10F),
             ForeColor = Theme.SidebarText,
             BackColor = Color.Transparent
         };
         var versionLabel = new Label
         {
-            Text = "ccDock 1.1.0",
+            Text = "ccDock 1.1.1",
             AutoSize = false,
             AutoEllipsis = true,
-            Font = Theme.UIFont(9F),
+            Font = Theme.UIFont(9.5F),
             ForeColor = Theme.SidebarMuted,
             BackColor = Color.Transparent
         };
@@ -564,9 +564,9 @@ public sealed class MainForm : Form
                 Ui.Px(sidebar, 20));
             versionLabel.SetBounds(
                 Ui.Px(sidebar, 38),
-                sidebar.ClientSize.Height - Ui.Px(sidebar, 46),
+                sidebar.ClientSize.Height - Ui.Px(sidebar, 48),
                 sidebar.ClientSize.Width - Ui.Px(sidebar, 58),
-                Ui.Px(sidebar, 18));
+                Ui.Px(sidebar, 20));
 
             var navWidth = Math.Max(Ui.Px(sidebar, 60), sidebar.ClientSize.Width - Ui.Px(sidebar, 28));
             foreach (var item in _navItems.Values)
@@ -663,17 +663,19 @@ public sealed class MainForm : Form
     {
         var (text, color) = _service.State switch
         {
-            EngineState.Running => ("同步引擎运行中", Theme.Success),
-            EngineState.Starting => ("正在启动同步引擎…", Theme.Warning),
-            EngineState.Error => ("同步引擎出现异常", Theme.Danger),
-            _ => ("同步引擎未启动", Theme.TextMuted)
+            EngineState.Running => ("同步引擎运行中", Theme.SidebarSuccess),
+            EngineState.Starting => ("正在启动同步引擎…", Theme.SidebarWarning),
+            EngineState.Error => ("同步引擎出现异常", Theme.SidebarDanger),
+            _ => ("同步引擎未启动", Theme.SidebarMuted)
         };
 
         _stateDot.ForeColor = color;
         _stateText.Text = text;
-        _stateText.ForeColor = _service.State == EngineState.Error ? Theme.Danger : Theme.SidebarText;
+        _stateText.ForeColor = _service.State == EngineState.Error
+            ? Theme.SidebarDanger
+            : Theme.SidebarText;
         _versionLabel.Text = string.IsNullOrWhiteSpace(_service.Version)
-            ? "ccDock 1.1.0"
+            ? "ccDock 1.1.1"
             : "Syncthing " + _service.Version;
     }
 

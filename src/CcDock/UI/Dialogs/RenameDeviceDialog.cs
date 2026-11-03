@@ -17,7 +17,7 @@ public sealed class RenameDeviceDialog : DialogBase
     {
         _service = service;
 
-        var label = Ui.Text("设备名称", 9.5F, Theme.TextSecondary);
+        var label = Ui.Text("设备名称", 10F, Theme.TextSecondary);
         label.Location = new Point(0, 0);
         _name = Ui.Input("例如：家里的台式机");
         _name.Location = new Point(0, 20);
@@ -25,7 +25,7 @@ public sealed class RenameDeviceDialog : DialogBase
         _name.Text = currentName;
         _name.SelectAll();
 
-        var hint = Ui.Text("最多 64 个字符。", 9F, Theme.TextMuted);
+        var hint = Ui.Text("最多 64 个字符。", 9.5F, Theme.TextMuted);
         hint.Location = new Point(0, 64);
 
         Content.Controls.Add(label);

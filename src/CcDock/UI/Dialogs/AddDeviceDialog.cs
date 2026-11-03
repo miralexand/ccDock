@@ -17,7 +17,7 @@ public sealed class AddDeviceDialog : DialogBase
     {
         _service = service;
 
-        var label = Ui.Text("对方的设备 ID", 9.5F, Theme.TextSecondary);
+        var label = Ui.Text("对方的设备 ID", 10F, Theme.TextSecondary);
         label.Location = new Point(0, 0);
         _deviceId = Ui.Input(
             "XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX",
@@ -29,7 +29,7 @@ public sealed class AddDeviceDialog : DialogBase
         var hint = Ui.Wrap(
             "在对方电脑打开 ccDock，进入“设备”页面，点击“复制 ID”后粘贴到这里。\n" +
             "设备 ID 共 56 位字符，可分为 8 组，每组 7 位。",
-            Content.Width, 9F, Theme.TextMuted);
+            Content.Width, 9.5F, Theme.TextMuted);
         hint.Location = new Point(0, 116);
 
         Content.Controls.Add(label);

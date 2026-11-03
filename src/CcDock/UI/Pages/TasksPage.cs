@@ -67,10 +67,10 @@ public sealed class TasksPage : PageBase
     {
         var card = Ui.Card();
         var glyph = Ui.Text(Glyphs.Folder, 30F, Theme.Primary);
-        var title = Ui.Text("还没有备份任务", 13F, Theme.TextPrimary, FontStyle.Bold);
+        var title = Ui.Text("还没有备份任务", 13.5F, Theme.TextPrimary, FontStyle.Bold);
         var description = Ui.Wrap(
             "选择一个文件夹，把它安全地同步到另一台电脑。\n文件只会在你的设备之间直接传输。",
-            560, 9.5F, Theme.TextSecondary);
+            560, 10F, Theme.TextSecondary);
         var button = Ui.Button("新建备份任务", ButtonKind.Primary, Glyphs.Add, 162);
         button.Click += async (_, _) => await Host.CreateBackupAsync();
 
@@ -99,11 +99,11 @@ public sealed class TasksPage : PageBase
 
         var title = Ui.Text(
             string.IsNullOrWhiteSpace(folder.Label) ? folder.Id : folder.Label,
-            12.5F, Theme.TextPrimary, FontStyle.Bold);
+            13F, Theme.TextPrimary, FontStyle.Bold);
         title.AutoSize = false;
         title.AutoEllipsis = true;
-        title.Location = new Point(52, 20);
-        title.Height = 24;
+        title.Location = new Point(52, 18);
+        title.Height = 26;
 
         var typeBadge = new Badge();
         if (folder.Type.Equals("receiveencrypted", StringComparison.OrdinalIgnoreCase))
@@ -119,11 +119,11 @@ public sealed class TasksPage : PageBase
             typeBadge.Apply("备份任务", Theme.PrimarySoft, Theme.Primary);
         }
 
-        var path = Ui.Text(folder.Path, 9F, Theme.TextSecondary);
+        var path = Ui.Text(folder.Path, 10F, Theme.TextSecondary);
         path.AutoSize = false;
         path.AutoEllipsis = true;
         path.Location = new Point(52, 48);
-        path.Height = 18;
+        path.Height = 20;
 
         var remoteNames = view.RemoteDevices.Count == 0
             ? "尚未配置接收设备"
@@ -136,16 +136,16 @@ public sealed class TasksPage : PageBase
             : view.Connected ? " · 已连接" : " · 未连接";
 
         var remoteDot = Ui.Text("●", 7F, connectionColor);
-        remoteDot.Location = new Point(52, 76);
-        var remote = Ui.Text("对方：" + remoteNames + connectionText, 9.5F, Theme.TextMuted);
+        remoteDot.Location = new Point(52, 80);
+        var remote = Ui.Text("对方：" + remoteNames + connectionText, 10F, Theme.TextMuted);
         remote.AutoSize = false;
         remote.AutoEllipsis = true;
-        remote.Location = new Point(66, 72);
-        remote.Height = 20;
+        remote.Location = new Point(66, 76);
+        remote.Height = 22;
 
         var bar = new ThinProgressBar
         {
-            Location = new Point(24, 108),
+            Location = new Point(24, 112),
             Height = 8
         };
         var progress = ComputeProgress(view);
@@ -154,11 +154,11 @@ public sealed class TasksPage : PageBase
             ? Theme.Danger
             : progress >= 100 ? Theme.Success : Theme.Primary;
 
-        var status = Ui.Text(StatusText(view), 9.5F, StatusColor(view));
+        var status = Ui.Text(StatusText(view), 10F, StatusColor(view));
         status.AutoSize = false;
         status.AutoEllipsis = true;
-        status.Location = new Point(24, 124);
-        status.Height = 20;
+        status.Location = new Point(24, 130);
+        status.Height = 22;
 
         var open = Ui.Button("打开文件夹", ButtonKind.Secondary, Glyphs.OpenFolder, 136);
         open.Height = 34;
@@ -170,9 +170,8 @@ public sealed class TasksPage : PageBase
             }
         };
 
-        var remove = Ui.Button("移除", ButtonKind.Ghost, Glyphs.Delete, 88);
+        var remove = Ui.Button("移除", ButtonKind.DangerGhost, Glyphs.Delete, 88);
         remove.Height = 34;
-        remove.ForeColor = Theme.Danger;
         remove.Click += async (_, _) => await RemoveFolderAsync(folder);
 
         card.Controls.Add(glyph);
@@ -198,13 +197,13 @@ public sealed class TasksPage : PageBase
             status.Width = Math.Max(Ui.Px(card, 80), width - Ui.Px(card, 300));
             typeBadge.Location = new Point(
                 width - typeBadge.Width - Ui.Px(card, 24),
-                Ui.Px(card, 24));
+                Ui.Px(card, 22));
             remove.Location = new Point(
                 width - remove.Width - Ui.Px(card, 24),
-                Ui.Px(card, 146));
+                Ui.Px(card, 152));
             open.Location = new Point(
                 remove.Left - open.Width - Ui.Px(card, 8),
-                Ui.Px(card, 146));
+                Ui.Px(card, 152));
         };
 
         return card;

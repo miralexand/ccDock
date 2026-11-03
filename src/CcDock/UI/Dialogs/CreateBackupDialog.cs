@@ -26,13 +26,13 @@ public sealed class CreateBackupDialog : DialogBase
     {
         _service = service;
 
-        var nameLabel = Ui.Text("任务名称（可选）", 9.5F, Theme.TextSecondary);
+        var nameLabel = Ui.Text("任务名称（可选）", 10F, Theme.TextSecondary);
         nameLabel.Location = new Point(0, 0);
         _name = Ui.Input("例如：工作文档备份");
         _name.Location = new Point(0, 20);
         _name.Width = Content.Width;
 
-        var pathLabel = Ui.Text("要备份的文件夹", 9.5F, Theme.TextSecondary);
+        var pathLabel = Ui.Text("要备份的文件夹", 10F, Theme.TextSecondary);
         pathLabel.Location = new Point(0, 64);
         _path = Ui.Input("选择本机文件夹");
         _path.Location = new Point(0, 84);
@@ -42,7 +42,7 @@ public sealed class CreateBackupDialog : DialogBase
         browse.Location = new Point(Content.Width - 90, 84);
         browse.Click += (_, _) => BrowseForFolder();
 
-        var deviceLabel = Ui.Text("从已有设备中选择（可选）", 9.5F, Theme.TextSecondary);
+        var deviceLabel = Ui.Text("从已有设备中选择（可选）", 10F, Theme.TextSecondary);
         deviceLabel.Location = new Point(0, 130);
         _deviceCombo = Ui.Combo();
         _deviceCombo.Location = new Point(0, 150);
@@ -54,7 +54,7 @@ public sealed class CreateBackupDialog : DialogBase
         }
         _deviceCombo.SelectedIndex = 0;
 
-        var idLabel = Ui.Text("对方的设备 ID", 9.5F, Theme.TextSecondary);
+        var idLabel = Ui.Text("对方的设备 ID", 10F, Theme.TextSecondary);
         idLabel.Location = new Point(0, 190);
         _deviceId = Ui.Input("XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX");
         _deviceId.Location = new Point(0, 210);
@@ -70,7 +70,7 @@ public sealed class CreateBackupDialog : DialogBase
         var hint = Ui.Wrap(
             "在对方电脑打开 ccDock，进入“设备”页面复制该电脑的设备 ID。\n" +
             "创建后，本机会把该文件夹设为“仅发送”，对方接收后即可开始备份。",
-            Content.Width, 9F, Theme.TextMuted);
+            Content.Width, 9.5F, Theme.TextMuted);
         hint.Location = new Point(0, 252);
 
         Content.Controls.Add(nameLabel);
